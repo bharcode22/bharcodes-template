@@ -1,0 +1,6 @@
+{
+  "name": "Kinetik Studio",
+  "description": "Studio video programatik berbasis Remotion untuk membuat, menyunting, dan mengekspor komposisi animasi React secara real-time.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
