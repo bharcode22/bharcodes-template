@@ -257,6 +257,232 @@ function scheduleTelemetryPing(
   osc.stop(startSec + 0.18);
 }
 
+// ============================================================================
+// NON-TONAL (ATONAL / UNPITCHED) UI FOLEY & PERCUSSION SOUND GENERATORS
+// Pure noise & fast micro-transients with NO musical notes / pitches
+// Guaranteed not to clash with any background music or chords.
+// ============================================================================
+
+// Pure air whoosh / silky swish (filtered pink noise sweep, zero oscillator tone)
+function schedulePureAirWhoosh(
+  ctx: OfflineAudioContext,
+  dest: AudioNode,
+  noiseBuffer: AudioBuffer,
+  startSec: number,
+  durationSec: number,
+  startFreq: number,
+  endFreq: number,
+  gainPeak: number,
+  pan = 0
+): void {
+  const panner = connectPanned(ctx, dest, pan);
+
+  const noise = ctx.createBufferSource();
+  noise.buffer = noiseBuffer;
+  noise.loop = true;
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.Q.setValueAtTime(1.5, startSec);
+  filter.frequency.setValueAtTime(Math.max(100, startFreq), startSec);
+  filter.frequency.exponentialRampToValueAtTime(
+    Math.max(100, endFreq),
+    startSec + durationSec
+  );
+
+  const env = ctx.createGain();
+  env.gain.setValueAtTime(0.0001, startSec);
+  env.gain.linearRampToValueAtTime(gainPeak, startSec + durationSec * 0.35);
+  env.gain.exponentialRampToValueAtTime(0.0001, startSec + durationSec);
+
+  noise.connect(filter);
+  filter.connect(env);
+  env.connect(panner);
+  noise.start(startSec);
+  noise.stop(startSec + durationSec + 0.02);
+}
+
+// Deep tactile / haptic thud (micro sub-kick transient under 25ms, pitchless impact)
+function scheduleHapticThud(
+  ctx: OfflineAudioContext,
+  dest: AudioNode,
+  noiseBuffer: AudioBuffer,
+  startSec: number,
+  gainPeak = 0.2,
+  pan = 0
+): void {
+  const panner = connectPanned(ctx, dest, pan);
+
+  // Muffled low-end noise body (80-160Hz)
+  const noise = ctx.createBufferSource();
+  noise.buffer = noiseBuffer;
+  const lp = ctx.createBiquadFilter();
+  lp.type = 'lowpass';
+  lp.frequency.setValueAtTime(160, startSec);
+
+  const noiseEnv = ctx.createGain();
+  noiseEnv.gain.setValueAtTime(0.0001, startSec);
+  noiseEnv.gain.linearRampToValueAtTime(gainPeak * 0.7, startSec + 0.003);
+  noiseEnv.gain.exponentialRampToValueAtTime(0.0001, startSec + 0.045);
+
+  noise.connect(lp);
+  lp.connect(noiseEnv);
+  noiseEnv.connect(panner);
+  noise.start(startSec);
+  noise.stop(startSec + 0.05);
+
+  // Micro pitch-drop sub-kick transient (120Hz -> 25Hz in 22ms)
+  const osc = ctx.createOscillator();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(120, startSec);
+  osc.frequency.exponentialRampToValueAtTime(25, startSec + 0.022);
+
+  const subEnv = ctx.createGain();
+  subEnv.gain.setValueAtTime(0.0001, startSec);
+  subEnv.gain.linearRampToValueAtTime(gainPeak * 0.75, startSec + 0.002);
+  subEnv.gain.exponentialRampToValueAtTime(0.0001, startSec + 0.035);
+
+  osc.connect(subEnv);
+  subEnv.connect(panner);
+  osc.start(startSec);
+  osc.stop(startSec + 0.04);
+}
+
+// Crisp non-tonal UI click / trackpad tap (3.2kHz bandpass noise burst)
+function scheduleUiClick(
+  ctx: OfflineAudioContext,
+  dest: AudioNode,
+  noiseBuffer: AudioBuffer,
+  startSec: number,
+  gainPeak = 0.16,
+  pan = 0
+): void {
+  const panner = connectPanned(ctx, dest, pan);
+
+  const click = ctx.createBufferSource();
+  click.buffer = noiseBuffer;
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.setValueAtTime(3200, startSec);
+  filter.Q.setValueAtTime(3.8, startSec);
+
+  const env = ctx.createGain();
+  env.gain.setValueAtTime(0.0001, startSec);
+  env.gain.linearRampToValueAtTime(gainPeak, startSec + 0.001);
+  env.gain.exponentialRampToValueAtTime(0.0001, startSec + 0.012);
+
+  click.connect(filter);
+  filter.connect(env);
+  env.connect(panner);
+  click.start(startSec);
+  click.stop(startSec + 0.02);
+}
+
+// Tactile latch / foley snap (double micro-click)
+function scheduleFoleySnap(
+  ctx: OfflineAudioContext,
+  dest: AudioNode,
+  noiseBuffer: AudioBuffer,
+  startSec: number,
+  gainPeak = 0.18,
+  pan = 0
+): void {
+  scheduleUiClick(ctx, dest, noiseBuffer, startSec, gainPeak, pan);
+  scheduleUiClick(
+    ctx,
+    dest,
+    noiseBuffer,
+    startSec + 0.014,
+    gainPeak * 0.65,
+    pan + 0.05
+  );
+}
+
+// Pure mechanical keyboard keystroke (tactile snap + muted chassis bottom-out, NO pitch)
+function scheduleAtonalKeyTap(
+  ctx: OfflineAudioContext,
+  dest: AudioNode,
+  noiseBuffer: AudioBuffer,
+  startSec: number,
+  gainPeak = 0.12,
+  isSpace = false,
+  pan = 0
+): void {
+  const panner = connectPanned(ctx, dest, pan);
+
+  // Tactile switch snap
+  const click = ctx.createBufferSource();
+  click.buffer = noiseBuffer;
+  const clickFilter = ctx.createBiquadFilter();
+  clickFilter.type = 'bandpass';
+  clickFilter.frequency.setValueAtTime(isSpace ? 1400 : 2300, startSec);
+  clickFilter.Q.setValueAtTime(2.6, startSec);
+
+  const clickEnv = ctx.createGain();
+  clickEnv.gain.setValueAtTime(0.0001, startSec);
+  clickEnv.gain.linearRampToValueAtTime(gainPeak * 0.85, startSec + 0.0015);
+  clickEnv.gain.exponentialRampToValueAtTime(0.0001, startSec + 0.018);
+
+  click.connect(clickFilter);
+  clickFilter.connect(clickEnv);
+  clickEnv.connect(panner);
+  click.start(startSec);
+  click.stop(startSec + 0.025);
+
+  // Muted bottom-out chassis thud
+  const thud = ctx.createBufferSource();
+  thud.buffer = noiseBuffer;
+  const thudFilter = ctx.createBiquadFilter();
+  thudFilter.type = 'lowpass';
+  thudFilter.frequency.setValueAtTime(isSpace ? 280 : 420, startSec);
+
+  const thudEnv = ctx.createGain();
+  thudEnv.gain.setValueAtTime(0.0001, startSec);
+  thudEnv.gain.linearRampToValueAtTime(gainPeak * 0.5, startSec + 0.002);
+  thudEnv.gain.exponentialRampToValueAtTime(0.0001, startSec + 0.028);
+
+  thud.connect(thudFilter);
+  thudFilter.connect(thudEnv);
+  thudEnv.connect(panner);
+  thud.start(startSec);
+  thud.stop(startSec + 0.035);
+}
+
+// Soft card / surface friction slide (swept filtered noise)
+function scheduleCardSlide(
+  ctx: OfflineAudioContext,
+  dest: AudioNode,
+  noiseBuffer: AudioBuffer,
+  startSec: number,
+  durationSec = 0.22,
+  gainPeak = 0.1,
+  pan = 0
+): void {
+  const panner = connectPanned(ctx, dest, pan);
+
+  const noise = ctx.createBufferSource();
+  noise.buffer = noiseBuffer;
+  noise.loop = true;
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.Q.setValueAtTime(2.0, startSec);
+  filter.frequency.setValueAtTime(800, startSec);
+  filter.frequency.linearRampToValueAtTime(1400, startSec + durationSec);
+
+  const env = ctx.createGain();
+  env.gain.setValueAtTime(0.0001, startSec);
+  env.gain.linearRampToValueAtTime(gainPeak, startSec + durationSec * 0.3);
+  env.gain.exponentialRampToValueAtTime(0.0001, startSec + durationSec);
+
+  noise.connect(filter);
+  filter.connect(env);
+  env.connect(panner);
+  noise.start(startSec);
+  noise.stop(startSec + durationSec + 0.02);
+}
+
 function encodeAudioBufferToWavBlob(buffer: AudioBuffer): Blob {
   const numChannels = buffer.numberOfChannels;
   const sampleRate = buffer.sampleRate;
@@ -310,7 +536,7 @@ function encodeAudioBufferToWavBlob(buffer: AudioBuffer): Blob {
   return new Blob([arrayBuf], { type: 'audio/wav' });
 }
 
-export type SfxPreset = 'mqtt' | 'sse';
+export type SfxPreset = 'mqtt' | 'sse' | 'uiux';
 
 async function synthesizeMqttWebSocketSfx(
   durationSeconds = 34
@@ -704,6 +930,218 @@ async function synthesizeSseProtocolSfx(durationSeconds = 48.5): Promise<Blob> {
   return encodeAudioBufferToWavBlob(rendered);
 }
 
+// ----------------------------------------------------------------------------
+// DEDICATED NON-TONAL SOUND FX ENGINE FOR UI/UX ENGINEER COMPOSITION
+// 100% Unpitched / Atonal UI Foley, Mechanical Keyboard & Haptic Impacts
+// Perfectly harmonizes with ANY background music track.
+// ----------------------------------------------------------------------------
+async function synthesizeUiUxEngineerSfx(
+  durationSeconds = 68
+): Promise<Blob> {
+  const safeDuration = Math.max(10, Math.min(240, durationSeconds));
+  const totalSamples = Math.ceil(safeDuration * SAMPLE_RATE);
+  const ctx = new OfflineAudioContext(2, totalSamples, SAMPLE_RATE);
+
+  const masterCompressor = ctx.createDynamicsCompressor();
+  masterCompressor.threshold.setValueAtTime(-15, 0);
+  masterCompressor.knee.setValueAtTime(14, 0);
+  masterCompressor.ratio.setValueAtTime(3.2, 0);
+  masterCompressor.attack.setValueAtTime(0.003, 0);
+  masterCompressor.release.setValueAtTime(0.15, 0);
+
+  const masterGain = ctx.createGain();
+  masterGain.gain.setValueAtTime(0.85, 0);
+
+  masterCompressor.connect(masterGain);
+  masterGain.connect(ctx.destination);
+
+  const noiseBuffer = createNoiseBuffer(ctx, 3.0);
+
+  // --------------------------------------------------------------------------
+  // SCENE 0 (0 - 204f): Developer IDE & Code Typing Hook
+  // --------------------------------------------------------------------------
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(0), 0.35, 1400, 350, 0.14, -0.1);
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(4), 0.18, -0.1);
+
+  const codeTypingCues = [
+    18, 22, 26, 30, 34, 40, 48, 54, 60, 68, 76, 84, 92, 102, 112, 122, 134, 146, 158, 170,
+  ];
+  codeTypingCues.forEach((f, idx) => {
+    scheduleAtonalKeyTap(
+      ctx,
+      masterCompressor,
+      noiseBuffer,
+      fToSec(f),
+      0.09 + (idx % 3) * 0.015,
+      f === 40 || f === 92 || f === 146,
+      ((idx % 5) - 2) * 0.08
+    );
+  });
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(196), 0.28, 380, 1250, 0.12, 0);
+
+  // --------------------------------------------------------------------------
+  // SCENE 1 (204 - 289f): AI Prompt Input & Submission
+  // --------------------------------------------------------------------------
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(205), 0.2, 0);
+  scheduleFoleySnap(ctx, masterCompressor, noiseBuffer, fToSec(206), 0.16, 0);
+
+  const promptTypingFrames = [
+    214, 217, 221, 225, 228, 232, 236, 239, 243, 247, 250, 254, 258,
+  ];
+  promptTypingFrames.forEach((f, i) => {
+    scheduleAtonalKeyTap(
+      ctx,
+      masterCompressor,
+      noiseBuffer,
+      fToSec(f),
+      0.11,
+      i === 2 || i === 7 || i === 10,
+      ((i % 4) - 1.5) * 0.08
+    );
+  });
+  // Submit action click on Ready to Send button
+  scheduleUiClick(ctx, masterCompressor, noiseBuffer, fToSec(262), 0.22, 0.2);
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(282), 0.28, 1200, 380, 0.13, 0);
+
+  // --------------------------------------------------------------------------
+  // SCENE 2 (280 - 450f): Request Atasan & Multimedia Options
+  // --------------------------------------------------------------------------
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(284), 0.2, -0.15);
+  // Video, Audio, Image media pills popping in
+  [315, 335, 355].forEach((f, idx) => {
+    scheduleFoleySnap(ctx, masterCompressor, noiseBuffer, fToSec(f), 0.17, -0.3 + idx * 0.3);
+  });
+  // AI Agent badge highlight
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(380), 0.18, 0.2);
+  scheduleUiClick(ctx, masterCompressor, noiseBuffer, fToSec(381), 0.15, 0.2);
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(438), 0.32, 350, 1400, 0.13, 0);
+
+  // --------------------------------------------------------------------------
+  // SCENE 3 (444 - 600f): Web App Mockup UI
+  // --------------------------------------------------------------------------
+  scheduleCardSlide(ctx, masterCompressor, noiseBuffer, fToSec(448), 0.3, 0.14, 0);
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(452), 0.19, 0);
+  scheduleUiClick(ctx, masterCompressor, noiseBuffer, fToSec(485), 0.18, -0.15);
+  scheduleFoleySnap(ctx, masterCompressor, noiseBuffer, fToSec(525), 0.16, 0.15);
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(588), 0.3, 1300, 350, 0.13, 0);
+
+  // --------------------------------------------------------------------------
+  // SCENE 4 (594 - 915f): Terminal Pivot Narration
+  // --------------------------------------------------------------------------
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(598), 0.32, 280, 1100, 0.15, 0);
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(601), 0.22, 0);
+
+  // Rhythmic typing taps across the pivot explanation
+  for (let f = 612; f <= 880; f += 8) {
+    if (
+      (f >= 660 && f <= 675) ||
+      (f >= 740 && f <= 755) ||
+      (f >= 810 && f <= 825)
+    ) {
+      continue;
+    }
+    const isSpace = f % 24 === 0;
+    scheduleAtonalKeyTap(
+      ctx,
+      masterCompressor,
+      noiseBuffer,
+      fToSec(f),
+      isSpace ? 0.08 : 0.095 + (f % 5) * 0.006,
+      isSpace,
+      ((f % 7) - 3) * 0.06
+    );
+  }
+  scheduleAtonalKeyTap(ctx, masterCompressor, noiseBuffer, fToSec(895), 0.16, true, 0);
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(896), 0.15, 0);
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(906), 0.3, 350, 1300, 0.14, 0);
+
+  // --------------------------------------------------------------------------
+  // SCENE 5 (910 - 1193f): Pendapat -> Masalah -> Solusi Flow
+  // --------------------------------------------------------------------------
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(912), 0.3, 1100, 380, 0.13, -0.2);
+  // 01. Pendapat
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(914), 0.2, -0.3);
+  scheduleFoleySnap(ctx, masterCompressor, noiseBuffer, fToSec(916), 0.15, -0.3);
+
+  // 02. Masalah
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(960), 0.2, 0);
+  scheduleFoleySnap(ctx, masterCompressor, noiseBuffer, fToSec(962), 0.15, 0);
+
+  // 03. Solusi (Highlight)
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(1055), 0.24, 0.3);
+  scheduleFoleySnap(ctx, masterCompressor, noiseBuffer, fToSec(1057), 0.18, 0.3);
+  scheduleUiClick(ctx, masterCompressor, noiseBuffer, fToSec(1060), 0.16, 0.3);
+
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(1188), 0.3, 300, 1250, 0.13, 0);
+
+  // --------------------------------------------------------------------------
+  // SCENE 6 (1194 - 1524f): Kinetic Typography (Word-by-word steps)
+  // --------------------------------------------------------------------------
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(1196), 0.34, 1300, 400, 0.14, 0);
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(1198), 0.18, 0);
+
+  const wordStepCues = [
+    1205, 1235, 1270, 1305, 1345, 1385, 1420, 1460, 1495,
+  ];
+  wordStepCues.forEach((f, idx) => {
+    scheduleUiClick(
+      ctx,
+      masterCompressor,
+      noiseBuffer,
+      fToSec(f),
+      0.11,
+      ((idx % 3) - 1) * 0.18
+    );
+    if (idx === 4) {
+      // Highlight on "Cuman..." transition
+      scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(f), 0.19, 0);
+    }
+  });
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(1518), 0.32, 400, 1400, 0.14, 0);
+
+  // --------------------------------------------------------------------------
+  // SCENE 7 (1524 - 1824f): Role of UI/UX (3 Figma Design Cards)
+  // --------------------------------------------------------------------------
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(1528), 0.34, 1200, 350, 0.13, 0);
+  // Card 1
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(1548), 0.19, -0.4);
+  scheduleFoleySnap(ctx, masterCompressor, noiseBuffer, fToSec(1550), 0.14, -0.4);
+  // Card 2
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(1578), 0.19, 0);
+  scheduleFoleySnap(ctx, masterCompressor, noiseBuffer, fToSec(1580), 0.14, 0);
+  // Card 3
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(1608), 0.19, 0.4);
+  scheduleFoleySnap(ctx, masterCompressor, noiseBuffer, fToSec(1610), 0.14, 0.4);
+
+  scheduleUiClick(ctx, masterCompressor, noiseBuffer, fToSec(1675), 0.12, -0.2);
+  scheduleUiClick(ctx, masterCompressor, noiseBuffer, fToSec(1740), 0.12, 0.2);
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(1818), 0.34, 350, 1400, 0.14, 0);
+
+  // --------------------------------------------------------------------------
+  // SCENE 8 (1824 - 2020f): Bridge Pipeline Cards & Outro
+  // --------------------------------------------------------------------------
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(1828), 0.35, 1400, 360, 0.15, 0);
+  // Pipeline Card 1: Ide Atasan
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(1848), 0.2, -0.4);
+  scheduleFoleySnap(ctx, masterCompressor, noiseBuffer, fToSec(1850), 0.14, -0.4);
+  // Pipeline Card 2: UI/UX Bridge
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(1878), 0.24, 0);
+  scheduleFoleySnap(ctx, masterCompressor, noiseBuffer, fToSec(1880), 0.18, 0);
+  // Pipeline Card 3: Developer
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(1908), 0.2, 0.4);
+  scheduleFoleySnap(ctx, masterCompressor, noiseBuffer, fToSec(1910), 0.14, 0.4);
+
+  // Pipeline flow connection complete
+  scheduleHapticThud(ctx, masterCompressor, noiseBuffer, fToSec(1948), 0.26, 0);
+  scheduleUiClick(ctx, masterCompressor, noiseBuffer, fToSec(1950), 0.16, 0);
+
+  // Outro fade
+  schedulePureAirWhoosh(ctx, masterCompressor, noiseBuffer, fToSec(2005), 0.45, 1100, 200, 0.12, 0);
+
+  const rendered = await ctx.startRendering();
+  return encodeAudioBufferToWavBlob(rendered);
+}
+
 export function getSoundFxWavBlob(
   durationSeconds = 34,
   preset: SfxPreset = 'mqtt'
@@ -713,9 +1151,11 @@ export function getSoundFxWavBlob(
   if (existing) return existing;
 
   const promise =
-    preset === 'sse'
-      ? synthesizeSseProtocolSfx(durationSeconds)
-      : synthesizeMqttWebSocketSfx(durationSeconds);
+    preset === 'uiux'
+      ? synthesizeUiUxEngineerSfx(durationSeconds)
+      : preset === 'sse'
+        ? synthesizeSseProtocolSfx(durationSeconds)
+        : synthesizeMqttWebSocketSfx(durationSeconds);
   wavBlobCache.set(key, promise);
   return promise;
 }

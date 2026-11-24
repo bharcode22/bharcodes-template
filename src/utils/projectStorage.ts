@@ -18,6 +18,7 @@ export const SSE_SCENE4_SPLIT_V1_FLAG = 'kinetik_sse_scene4_split_v1';
 export const SSE_V4_REFINE_FLAG = 'kinetik_sse_v4_refine_v1';
 export const SSE_SCENE2_IMPROVE_V1_FLAG = 'kinetik_sse_scene2_improve_v1';
 export const SSE_SCENE6_SPLIT_V1_FLAG = 'kinetik_sse_scene6_split_v1';
+export const UIUX_SEED_FLAG = 'kinetik_seeded_uiux_v1';
 
 // Cue frames (30fps timebase) used for timeline audio/beat snap markers
 export const AUDIO_BEAT_CUES = [
@@ -26,6 +27,10 @@ export const AUDIO_BEAT_CUES = [
 
 export const SSE_BEAT_CUES = [
   0, 12, 30, 39, 40, 51, 76, 84, 172, 182, 236, 276, 286, 326, 442, 480, 536, 584, 626, 750, 825, 895, 935, 990, 1038, 1098, 1184, 1238, 1284, 1348, 1392,
+];
+
+export const UIUX_BEAT_CUES = [
+  0, 60, 120, 180, 204, 250, 280, 360, 444, 520, 594, 700, 800, 910, 1000, 1100, 1194, 1300, 1400, 1524, 1620, 1720, 1824, 1920, 2018,
 ];
 
 export function makeUid(prefix = 'id'): string {
@@ -580,6 +585,276 @@ export function createDefaultSseProject(): StudioProject {
   };
 }
 
+export function createDefaultUiUxClips(
+  appleDarkMode = true,
+  accentColor = '#0071E3'
+): TimelineClip[] {
+  const baseAnim = {
+    enterPreset: 'none' as const,
+    exitPreset: 'none' as const,
+    enterFrames: 12,
+    exitFrames: 14,
+    springDamping: 14,
+    springStiffness: 130,
+    resetOnTrim: false,
+  };
+
+  return [
+    {
+      id: 'uiux-0-hook',
+      name: '00. Hook: Tebak Kepala Atasan',
+      kind: 'scene-preset',
+      scenePresetId: 'uiux-0-hook',
+      trackRow: 0,
+      from: 0,
+      durationInFrames: 210,
+      sourceStartOffset: 0,
+      visible: true,
+      locked: false,
+      layerType: 'typography',
+      content: {
+        text: 'Menjadi software engineer di perusahaan yang tidak memiliki UI/UX itu ibarat kita menebak isi kepala atasan menggunakan kode',
+        subtext: 'Software Engineer vs Isi Kepala Atasan',
+        highlightWord: 'UI/UX',
+        badgeLabel: 'REALITY CHECK',
+        iconId: 'code',
+      },
+      animation: { ...baseAnim },
+      style: createDefaultStyle(appleDarkMode, accentColor, {
+        fontSize: 48,
+        borderRadius: 36,
+      }),
+    },
+    {
+      id: 'uiux-1-prompting',
+      name: '01. Walaupun Nge-prompt Aja',
+      kind: 'scene-preset',
+      scenePresetId: 'uiux-1-prompting',
+      trackRow: 1,
+      from: 204,
+      durationInFrames: 85,
+      sourceStartOffset: 0,
+      visible: true,
+      locked: false,
+      layerType: 'accent',
+      content: {
+        text: 'Yaa walaupun aku nge-prompt aja sih',
+        subtext: 'Prompting tetap butuh panduan UX yang jelas',
+        highlightWord: 'nge-prompt',
+        badgeLabel: 'AI PROMPT',
+        iconId: 'sparkles',
+      },
+      animation: { ...baseAnim },
+      style: createDefaultStyle(appleDarkMode, '#AF52DE', {
+        fontSize: 44,
+        borderRadius: 32,
+      }),
+    },
+    {
+      id: 'uiux-2-request',
+      name: '02. Request Upload via AI',
+      kind: 'scene-preset',
+      scenePresetId: 'uiux-2-request',
+      trackRow: 2,
+      from: 280,
+      durationInFrames: 170,
+      sourceStartOffset: 0,
+      visible: true,
+      locked: false,
+      layerType: 'media',
+      content: {
+        text: 'Diminta membuat fitur upload file multimedia dengan AI agent',
+        subtext: 'Video, Audio & Image multi-modal handling',
+        highlightWord: 'AI agent',
+        badgeLabel: 'NEW REQUIREMENT',
+        iconId: 'brain',
+      },
+      animation: { ...baseAnim },
+      style: createDefaultStyle(appleDarkMode, accentColor, {
+        fontSize: 42,
+        borderRadius: 34,
+      }),
+    },
+    {
+      id: 'uiux-3-webapp',
+      name: '03. Fitur Sudah Ada di Web App',
+      kind: 'scene-preset',
+      scenePresetId: 'uiux-3-webapp',
+      trackRow: 3,
+      from: 444,
+      durationInFrames: 156,
+      sourceStartOffset: 0,
+      visible: true,
+      locked: false,
+      layerType: 'media',
+      content: {
+        text: 'Sebelumnya sudah membuat fitur upload multimedia di dalam web app',
+        subtext: 'Status: 100% Upload Berfungsi',
+        highlightWord: 'web app',
+        badgeLabel: 'ALREADY BUILT',
+        iconId: 'code',
+      },
+      animation: { ...baseAnim },
+      style: createDefaultStyle(appleDarkMode, '#34C759', {
+        fontSize: 42,
+        borderRadius: 34,
+      }),
+    },
+    {
+      id: 'uiux-4-conflict',
+      name: '04. Experience Kurang Sesuai',
+      kind: 'scene-preset',
+      scenePresetId: 'uiux-4-conflict',
+      trackRow: 4,
+      from: 594,
+      durationInFrames: 321,
+      sourceStartOffset: 0,
+      visible: true,
+      locked: false,
+      layerType: 'accent',
+      content: {
+        text: 'Experience web app kurang sesuai dengan apa yang diinginkan oleh atasan',
+        subtext: 'Ekspektasi rasa dan interaksi berbeda',
+        highlightWord: 'experience',
+        badgeLabel: 'UX GAP',
+        iconId: 'design',
+      },
+      animation: { ...baseAnim },
+      style: createDefaultStyle(appleDarkMode, '#FF2D55', {
+        fontSize: 40,
+        borderRadius: 34,
+      }),
+    },
+    {
+      id: 'uiux-5-improve',
+      name: '05. Improve UX Dulu',
+      kind: 'scene-preset',
+      scenePresetId: 'uiux-5-improve',
+      trackRow: 5,
+      from: 910,
+      durationInFrames: 290,
+      sourceStartOffset: 0,
+      visible: true,
+      locked: false,
+      layerType: 'accent',
+      content: {
+        text: 'Kita bisa improve experience web tersebut terlebih dahulu sebelum mengubah ke AI agent',
+        subtext: 'Selesaikan masalah akar UX sebelum ganti arsitektur',
+        highlightWord: 'improve',
+        badgeLabel: 'BEST PRACTICE',
+        iconId: 'design',
+      },
+      animation: { ...baseAnim },
+      style: createDefaultStyle(appleDarkMode, '#34C759', {
+        fontSize: 40,
+        borderRadius: 34,
+      }),
+    },
+    {
+      id: 'uiux-6-dilemma',
+      name: '06. Dev UX ≠ Atasan UX',
+      kind: 'scene-preset',
+      scenePresetId: 'uiux-6-dilemma',
+      trackRow: 6,
+      from: 1194,
+      durationInFrames: 336,
+      sourceStartOffset: 0,
+      visible: true,
+      locked: false,
+      layerType: 'typography',
+      content: {
+        text: 'Experience dari sisi developer belum tentu sesuai dengan yang diinginkan oleh atasan',
+        subtext: 'Developer fokus pada fungsi teknis, atasan fokus pada flow & rasa',
+        highlightWord: 'developer',
+        badgeLabel: 'TWO WORLDS',
+        iconId: 'brain',
+      },
+      animation: { ...baseAnim },
+      style: createDefaultStyle(appleDarkMode, '#FF9500', {
+        fontSize: 40,
+        borderRadius: 34,
+      }),
+    },
+    {
+      id: 'uiux-7-role',
+      name: '07. Tiga Tugas Utama UI/UX',
+      kind: 'scene-preset',
+      scenePresetId: 'uiux-7-role',
+      trackRow: 7,
+      from: 1524,
+      durationInFrames: 306,
+      sourceStartOffset: 0,
+      visible: true,
+      locked: false,
+      layerType: 'background',
+      content: {
+        text: 'Tugas UI/UX: membuat tampilan menarik serta menyusun flow experience yang bagus',
+        subtext: 'Visual Menarik · User Flow Terstruktur · Experience Bagus',
+        highlightWord: 'UI/UX',
+        badgeLabel: 'ROLE ESSENTIALS',
+        iconId: 'design',
+      },
+      animation: { ...baseAnim },
+      style: createDefaultStyle(appleDarkMode, accentColor, {
+        fontSize: 42,
+        borderRadius: 34,
+      }),
+    },
+    {
+      id: 'uiux-8-bridge',
+      name: '08. Jembatan Ide Sebelum Coding',
+      kind: 'scene-preset',
+      scenePresetId: 'uiux-8-bridge',
+      trackRow: 8,
+      from: 1824,
+      durationInFrames: 196,
+      sourceStartOffset: 0,
+      visible: true,
+      locked: false,
+      layerType: 'typography',
+      content: {
+        text: 'UI/UX memungkinkan untuk menampung ide-ide atasan sebelum developer development',
+        subtext: 'Jembatan visi bisnis & implementasi teknis',
+        highlightWord: 'ide',
+        badgeLabel: 'THE BRIDGE',
+        iconId: 'sparkles',
+      },
+      animation: { ...baseAnim },
+      style: createDefaultStyle(appleDarkMode, '#AF52DE', {
+        fontSize: 42,
+        borderRadius: 36,
+      }),
+    },
+  ];
+}
+
+export function createDefaultUiUxProject(): StudioProject {
+  const now = Date.now();
+  return {
+    id: 'project-uiux-default',
+    compositionId: 'UiUxEngineerExplainer',
+    title: 'Naskah: Pentingnya UI/UX',
+    description:
+      'Animasi Apple Glassmorphism tentang relasi Software Engineer, Atasan, & pentingnya peran UI/UX sebagai jembatan ide sebelum proses development.',
+    isDefaultTemplate: true,
+    createdAt: now,
+    updatedAt: now,
+    aspectId: '16:9',
+    fps: 30,
+    durationInFrames: 2020,
+    audioEnabled: true,
+    audioVolume: 1,
+    audioSrc: '/assets/aistudio/ui_ux_engineer_voiceover.mp3',
+    audioLabel: 'Audio Narasi UI/UX (.mp3)',
+    audioDurationFrames: 2018,
+    soundFxEnabled: true,
+    soundFxVolume: 0.75,
+    appleDarkMode: true,
+    accentColor: '#0071E3',
+    clips: createDefaultUiUxClips(true, '#0071E3'),
+  };
+}
+
 export function createCustomLayerClip(
   layerType: CustomLayerType,
   from: number,
@@ -670,6 +945,7 @@ export function createScenePresetClip(
   accentColor = '#0071E3'
 ): TimelineClip {
   const template = [
+    ...createDefaultUiUxClips(appleDarkMode, accentColor),
     ...createDefaultMqttClips(appleDarkMode, accentColor),
     ...createDefaultSseClips(appleDarkMode, accentColor),
   ].find((c) => c.scenePresetId === scenePresetId);
@@ -729,12 +1005,14 @@ export function projectToCompositionProps(
   const compId = project.compositionId ?? 'MqttWebSocketExplainer';
   const firstScene = project.clips.find(
     (c) =>
+      c.scenePresetId === 'uiux-0-hook' ||
       c.scenePresetId === 'scene-1-intro' ||
       c.scenePresetId === 'sse-0-intro' ||
       c.scenePresetId === 'sse-1-upload'
   );
   const lastScene = project.clips.find(
     (c) =>
+      c.scenePresetId === 'uiux-8-bridge' ||
       c.scenePresetId === 'scene-6-outro' ||
       c.scenePresetId === 'sse-7-backend-outro'
   );
@@ -743,9 +1021,11 @@ export function projectToCompositionProps(
     kicker: '',
     headline:
       firstScene?.content.text ||
-      (compId === 'SseProtocolExplainer'
-        ? 'pernah gak ketika kamu upload file ke suatu sistem'
-        : 'bagaimana cara menampilkan data secara realtime di frontend'),
+      (compId === 'UiUxEngineerExplainer'
+        ? 'Menjadi software engineer di suatu perusahaan yang tidak memiliki UI/UX...'
+        : compId === 'SseProtocolExplainer'
+          ? 'pernah gak ketika kamu upload file ke suatu sistem'
+          : 'bagaimana cara menampilkan data secara realtime di frontend'),
     subtitle: project.description,
     ctaLabel: lastScene?.content.badgeLabel === 'ESP32-01' ? '' : '',
     accentColor: project.accentColor,
@@ -778,6 +1058,7 @@ export function projectToCompositionProps(
 
 export function loadProjectsFromStorage(): StudioProject[] {
   const defaultSet = () => [
+    createDefaultUiUxProject(),
     createDefaultSseProject(),
     createDefaultMqttProject(),
   ];
@@ -788,11 +1069,13 @@ export function loadProjectsFromStorage(): StudioProject[] {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) {
       window.localStorage.setItem(SSE_SEED_FLAG, '1');
+      window.localStorage.setItem(UIUX_SEED_FLAG, '1');
       return defaultSet();
     }
     const parsed = JSON.parse(raw) as unknown;
     if (!Array.isArray(parsed) || parsed.length === 0) {
       window.localStorage.setItem(SSE_SEED_FLAG, '1');
+      window.localStorage.setItem(UIUX_SEED_FLAG, '1');
       return defaultSet();
     }
     const valid = parsed
@@ -806,25 +1089,35 @@ export function loadProjectsFromStorage(): StudioProject[] {
       .map((proj) => {
         const compId: CompositionId =
           proj.compositionId ??
-          (proj.clips.some((c) => c.scenePresetId?.startsWith('sse-'))
-            ? 'SseProtocolExplainer'
-            : 'MqttWebSocketExplainer');
+          (proj.clips.some((c) => c.scenePresetId?.startsWith('uiux-'))
+            ? 'UiUxEngineerExplainer'
+            : proj.clips.some((c) => c.scenePresetId?.startsWith('sse-'))
+              ? 'SseProtocolExplainer'
+              : 'MqttWebSocketExplainer');
         return {
           ...proj,
           compositionId: compId,
           audioSrc:
             proj.audioSrc ??
-            (compId === 'SseProtocolExplainer'
-              ? '/assets/aistudio/Sequence_01_71ffa7aa.mp3'
-              : '/assets/aistudio/web_socket_7fcd94b2.flac'),
+            (compId === 'UiUxEngineerExplainer'
+              ? '/assets/aistudio/ui_ux_engineer_voiceover.mp3'
+              : compId === 'SseProtocolExplainer'
+                ? '/assets/aistudio/Sequence_01_71ffa7aa.mp3'
+                : '/assets/aistudio/web_socket_7fcd94b2.flac'),
           audioLabel:
             proj.audioLabel ??
-            (compId === 'SseProtocolExplainer'
-              ? 'Audio Narasi (.mp3)'
-              : 'Audio Narasi (.flac)'),
+            (compId === 'UiUxEngineerExplainer'
+              ? 'Audio Narasi UI/UX (.mp3)'
+              : compId === 'SseProtocolExplainer'
+                ? 'Audio Narasi (.mp3)'
+                : 'Audio Narasi (.flac)'),
           audioDurationFrames:
             proj.audioDurationFrames ??
-            (compId === 'SseProtocolExplainer' ? 1452 : 1010),
+            (compId === 'UiUxEngineerExplainer'
+              ? 2018
+              : compId === 'SseProtocolExplainer'
+                ? 1452
+                : 1010),
           clips: proj.clips.map((clip) => ({
             ...clip,
             style: {
@@ -847,6 +1140,7 @@ export function loadProjectsFromStorage(): StudioProject[] {
 
     if (valid.length === 0) {
       window.localStorage.setItem(SSE_SEED_FLAG, '1');
+      window.localStorage.setItem(UIUX_SEED_FLAG, '1');
       window.localStorage.setItem(SSE_INTRO_MIGRATE_FLAG, '1');
       return defaultSet();
     }
@@ -864,6 +1158,14 @@ export function loadProjectsFromStorage(): StudioProject[] {
       window.localStorage.setItem(SSE_SCENE6_SPLIT_V1_FLAG, '1');
       if (!result.some((p) => p.id === 'project-sse-default')) {
         result = [createDefaultSseProject(), ...result];
+      }
+    }
+
+    const alreadySeededUiUx = window.localStorage.getItem(UIUX_SEED_FLAG) === '1';
+    if (!alreadySeededUiUx) {
+      window.localStorage.setItem(UIUX_SEED_FLAG, '1');
+      if (!result.some((p) => p.id === 'project-uiux-default')) {
+        result = [createDefaultUiUxProject(), ...result];
       }
     }
 

@@ -1,6 +1,7 @@
 import type { CompositionDefinition, CompositionId } from './types';
 import { MqttWebSocketComposition } from './compositions/MqttWebSocketComposition';
 import { SseProtocolComposition } from './compositions/SseProtocolComposition';
+import { UiUxEngineerComposition } from './compositions/UiUxEngineerComposition';
 
 export const COMPOSITIONS: Record<CompositionId, CompositionDefinition> = {
   MqttWebSocketExplainer: {
@@ -205,6 +206,113 @@ export const COMPOSITIONS: Record<CompositionId, CompositionDefinition> = {
         from: 1184,
         durationInFrames: 271,
         layerType: 'background',
+      },
+    ],
+  },
+  UiUxEngineerExplainer: {
+    id: 'UiUxEngineerExplainer',
+    title: 'Naskah: Pentingnya UI/UX',
+    category: 'Audio Motion Graphic',
+    description:
+      'Animasi Apple Glassmorphism tentang relasi Software Engineer, Atasan, & pentingnya UI/UX sebagai jembatan ide sebelum proses development.',
+    defaultDurationInFrames: 2020,
+    defaultFps: 30,
+    defaultAspect: '16:9',
+    component: UiUxEngineerComposition,
+    defaultProps: {
+      kicker: '',
+      headline:
+        'Menjadi software engineer di perusahaan yang tidak memiliki UI/UX',
+      subtitle:
+        'UI/UX berfungsi menampung ide atasan serta menyusun flow dan experience yang bagus sebelum developer mulai coding.',
+      ctaLabel: '',
+      accentColor: '#0071E3',
+      backgroundColor: '#05070B',
+      springDamping: 14,
+      springStiffness: 130,
+      highlightWord: 'UI/UX',
+      appleDarkMode: true,
+      transparentBackground: true,
+      audioVolume: 1,
+      audioSrc: '/assets/aistudio/ui_ux_engineer_voiceover.mp3',
+      soundFxVolume: 0.75,
+      metrics: [
+        { label: 'Peran UI/UX', value: 3, unit: ' Pilar' },
+        { label: 'Adegan', value: 9, unit: ' klip' },
+        { label: 'Frame Rate', value: 30, unit: ' fps' },
+        { label: 'Durasi Narasi', value: 67.3, unit: ' dtk' },
+      ],
+    },
+    tracks: [
+      {
+        id: 'audio-narasi',
+        name: 'Audio Narasi (.mp3)',
+        from: 0,
+        durationInFrames: 2020,
+        layerType: 'media',
+      },
+      {
+        id: 'uiux-0-hook',
+        name: '00. Hook: Tebak Kepala Atasan',
+        from: 0,
+        durationInFrames: 210,
+        layerType: 'typography',
+      },
+      {
+        id: 'uiux-1-prompting',
+        name: '01. Walaupun Nge-prompt Aja',
+        from: 204,
+        durationInFrames: 85,
+        layerType: 'accent',
+      },
+      {
+        id: 'uiux-2-request',
+        name: '02. Request Upload via AI',
+        from: 280,
+        durationInFrames: 170,
+        layerType: 'media',
+      },
+      {
+        id: 'uiux-3-webapp',
+        name: '03. Fitur Sudah Ada di Web App',
+        from: 444,
+        durationInFrames: 156,
+        layerType: 'media',
+      },
+      {
+        id: 'uiux-4-conflict',
+        name: '04. Experience Kurang Sesuai',
+        from: 594,
+        durationInFrames: 321,
+        layerType: 'accent',
+      },
+      {
+        id: 'uiux-5-improve',
+        name: '05. Improve UX Dulu',
+        from: 910,
+        durationInFrames: 290,
+        layerType: 'accent',
+      },
+      {
+        id: 'uiux-6-dilemma',
+        name: '06. Dev UX ≠ Atasan UX',
+        from: 1194,
+        durationInFrames: 336,
+        layerType: 'typography',
+      },
+      {
+        id: 'uiux-7-role',
+        name: '07. Tiga Tugas Utama UI/UX',
+        from: 1524,
+        durationInFrames: 306,
+        layerType: 'background',
+      },
+      {
+        id: 'uiux-8-bridge',
+        name: '08. Jembatan Ide Sebelum Coding',
+        from: 1824,
+        durationInFrames: 196,
+        layerType: 'typography',
       },
     ],
   },

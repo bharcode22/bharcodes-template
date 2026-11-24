@@ -98,9 +98,11 @@ export function generateCompositionTsx(
 
   const resolvedAudioSrc =
     props.audioSrc ||
-    (comp.id === 'SseProtocolExplainer'
-      ? '/assets/aistudio/Sequence_01_71ffa7aa.mp3'
-      : '/assets/aistudio/web_socket_7fcd94b2.flac');
+    (comp.id === 'UiUxEngineerExplainer'
+      ? '/assets/aistudio/ui_ux_engineer_voiceover.mp3'
+      : comp.id === 'SseProtocolExplainer'
+        ? '/assets/aistudio/Sequence_01_71ffa7aa.mp3'
+        : '/assets/aistudio/web_socket_7fcd94b2.flac');
 
   return `import React from 'react';
 import { AbsoluteFill, Audio, Sequence } from 'remotion';

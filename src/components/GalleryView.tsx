@@ -167,9 +167,11 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
                       <div className="flex items-center gap-2 text-xs text-slate-400 font-mono tabular-nums">
                         <span>
                           {proj.isDefaultTemplate
-                            ? proj.compositionId === 'SseProtocolExplainer'
-                              ? 'Template SSE'
-                              : 'Template MQTT'
+                            ? proj.compositionId === 'UiUxEngineerExplainer'
+                              ? 'Template UI/UX'
+                              : proj.compositionId === 'SseProtocolExplainer'
+                                ? 'Template SSE'
+                                : 'Template MQTT'
                             : 'Komposisi Kustom'}
                         </span>
                         <span aria-hidden="true">·</span>

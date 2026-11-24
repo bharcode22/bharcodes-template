@@ -26,10 +26,12 @@ import { downloadSoundFxWav } from './audio/soundFxSynthesizer';
 import {
   AUDIO_BEAT_CUES,
   SSE_BEAT_CUES,
+  UIUX_BEAT_CUES,
   createBlankProject,
   createCustomLayerClip,
   createDefaultMqttProject,
   createDefaultSseProject,
+  createDefaultUiUxProject,
   createScenePresetClip,
   exportProjectAsJson,
   loadProjectsFromStorage,
@@ -861,8 +863,13 @@ export default function App() {
   ]);
 
   const handleResetDefaults = useCallback(() => {
+    const isUiUx = activeProject.compositionId === 'UiUxEngineerExplainer';
     const isSse = activeProject.compositionId === 'SseProtocolExplainer';
-    const fresh = isSse ? createDefaultSseProject() : createDefaultMqttProject();
+    const fresh = isUiUx
+      ? createDefaultUiUxProject()
+      : isSse
+        ? createDefaultSseProject()
+        : createDefaultMqttProject();
     mutateActiveProject(
       (proj) => ({
         ...proj,
@@ -980,7 +987,11 @@ export default function App() {
     if (sfxDownloading) return;
     setSfxDownloading(true);
     const preset =
-      activeProject.compositionId === 'SseProtocolExplainer' ? 'sse' : 'mqtt';
+      activeProject.compositionId === 'UiUxEngineerExplainer'
+        ? 'uiux'
+        : activeProject.compositionId === 'SseProtocolExplainer'
+          ? 'sse'
+          : 'mqtt';
     try {
       await downloadSoundFxWav(
         Math.max(10, Math.round(durationInFrames / fps)),
@@ -1534,9 +1545,11 @@ export default function App() {
               audioLabel={activeProject.audioLabel}
               audioDurationFrames={activeProject.audioDurationFrames}
               beatCues={
-                activeProject.compositionId === 'SseProtocolExplainer'
-                  ? SSE_BEAT_CUES
-                  : AUDIO_BEAT_CUES
+                activeProject.compositionId === 'UiUxEngineerExplainer'
+                  ? UIUX_BEAT_CUES
+                  : activeProject.compositionId === 'SseProtocolExplainer'
+                    ? SSE_BEAT_CUES
+                    : AUDIO_BEAT_CUES
               }
               soundFxEnabled={
                 activeProject.soundFxEnabled ?? activeProject.soundFxVolume > 0

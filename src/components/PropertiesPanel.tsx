@@ -1061,9 +1061,11 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
             <div className="flex items-center justify-between py-0.5">
               <span className="text-xs text-slate-300">
                 {project.audioLabel ||
-                  (project.compositionId === 'SseProtocolExplainer'
-                    ? 'Narasi Bawaan (.mp3)'
-                    : 'Narasi Bawaan (.flac)')}
+                  (project.compositionId === 'UiUxEngineerExplainer'
+                    ? 'Narasi UI/UX (.mp3)'
+                    : project.compositionId === 'SseProtocolExplainer'
+                      ? 'Narasi Bawaan (.mp3)'
+                      : 'Narasi Bawaan (.flac)')}
               </span>
               <button
                 type="button"

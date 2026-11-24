@@ -33,7 +33,7 @@ import type {
   ScenePresetId,
   TimelineClip,
 } from '../remotion/types';
-import { AUDIO_BEAT_CUES, SSE_BEAT_CUES } from '../utils/projectStorage';
+import { AUDIO_BEAT_CUES, SSE_BEAT_CUES, UIUX_BEAT_CUES } from '../utils/projectStorage';
 
 interface StudioTimelineProps {
   playerRef: React.RefObject<PlayerRef | null>;
@@ -142,6 +142,18 @@ const SSE_PRESET_MENU: Array<{ id: ScenePresetId; label: string }> = [
   { id: 'sse-7-backend-outro', label: '07. Backend Kirim Bertahap' },
 ];
 
+const UIUX_PRESET_MENU: Array<{ id: ScenePresetId; label: string }> = [
+  { id: 'uiux-0-hook', label: '00. Hook: Tebak Kepala Atasan' },
+  { id: 'uiux-1-prompting', label: '01. Walaupun Nge-prompt Aja' },
+  { id: 'uiux-2-request', label: '02. Request Upload via AI' },
+  { id: 'uiux-3-webapp', label: '03. Fitur Sudah Ada di Web App' },
+  { id: 'uiux-4-conflict', label: '04. Experience Kurang Sesuai' },
+  { id: 'uiux-5-improve', label: '05. Improve UX Dulu' },
+  { id: 'uiux-6-dilemma', label: '06. Dev UX ≠ Atasan UX' },
+  { id: 'uiux-7-role', label: '07. Tiga Tugas Utama UI/UX' },
+  { id: 'uiux-8-bridge', label: '08. Jembatan Ide Sebelum Coding' },
+];
+
 export const StudioTimeline: React.FC<StudioTimelineProps> = ({
   compositionId = 'MqttWebSocketExplainer',
   currentFrame,
@@ -195,14 +207,25 @@ export const StudioTimeline: React.FC<StudioTimelineProps> = ({
   const [durationMenuOpen, setDurationMenuOpen] = useState<boolean>(false);
   const [dragState, setDragState] = useState<ActiveDragState | null>(null);
 
+  const isUiUx = compositionId === 'UiUxEngineerExplainer';
   const isSse = compositionId === 'SseProtocolExplainer';
   const activeBeatCues =
-    beatCues ?? (isSse ? SSE_BEAT_CUES : AUDIO_BEAT_CUES);
-  const presetMenuItems = isSse ? SSE_PRESET_MENU : MQTT_PRESET_MENU;
+    beatCues ??
+    (isUiUx ? UIUX_BEAT_CUES : isSse ? SSE_BEAT_CUES : AUDIO_BEAT_CUES);
+  const presetMenuItems = isUiUx
+    ? UIUX_PRESET_MENU
+    : isSse
+      ? SSE_PRESET_MENU
+      : MQTT_PRESET_MENU;
   const resolvedAudioLabel =
-    audioLabel || (isSse ? 'Audio Narasi (.mp3)' : 'Audio Narasi (.flac)');
+    audioLabel ||
+    (isUiUx
+      ? 'Audio Narasi UI/UX (.mp3)'
+      : isSse
+        ? 'Audio Narasi (.mp3)'
+        : 'Audio Narasi (.flac)');
   const resolvedAudioDuration =
-    audioDurationFrames ?? (isSse ? 1452 : 1010);
+    audioDurationFrames ?? (isUiUx ? 2018 : isSse ? 1452 : 1010);
 
   const labelColWidth = 228;
 

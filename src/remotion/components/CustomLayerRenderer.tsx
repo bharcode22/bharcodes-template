@@ -8,6 +8,10 @@ import {
   ReactIcon,
   SensorModuleIcon,
   WebSocketIcon,
+  CodeBracketIcon,
+  DesignPaletteIcon,
+  BrainMindIcon,
+  SparklesAiIcon,
 } from './TechIcons';
 
 export function renderClipIcon(
@@ -43,6 +47,18 @@ export function renderClipIcon(
       return (
         <SensorModuleIcon size={size} color={color} accentColor={accentColor} />
       );
+    case 'code':
+      return <CodeBracketIcon size={size} color={color} />;
+    case 'design':
+      return (
+        <DesignPaletteIcon size={size} color={color} accentColor={accentColor} />
+      );
+    case 'brain':
+      return (
+        <BrainMindIcon size={size} color={color} accentColor={accentColor} />
+      );
+    case 'sparkles':
+      return <SparklesAiIcon size={size} color={color} />;
   }
 }
 

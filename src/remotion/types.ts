@@ -1,6 +1,9 @@
 import type React from 'react';
 
-export type CompositionId = 'MqttWebSocketExplainer' | 'SseProtocolExplainer';
+export type CompositionId =
+  | 'MqttWebSocketExplainer'
+  | 'SseProtocolExplainer'
+  | 'UiUxEngineerExplainer';
 
 export type AspectPresetId = '16:9' | '9:16';
 
@@ -39,7 +42,16 @@ export type ScenePresetId =
   | 'sse-5-vs-ws'
   | 'sse-6a-intro'
   | 'sse-6-one-way'
-  | 'sse-7-backend-outro';
+  | 'sse-7-backend-outro'
+  | 'uiux-0-hook'
+  | 'uiux-1-prompting'
+  | 'uiux-2-request'
+  | 'uiux-3-webapp'
+  | 'uiux-4-conflict'
+  | 'uiux-5-improve'
+  | 'uiux-6-dilemma'
+  | 'uiux-7-role'
+  | 'uiux-8-bridge';
 
 export type CustomLayerType =
   | 'glass-card'
@@ -53,7 +65,11 @@ export type ClipIconId =
   | 'nodejs'
   | 'react'
   | 'hardware'
-  | 'sensor';
+  | 'sensor'
+  | 'code'
+  | 'design'
+  | 'brain'
+  | 'sparkles';
 
 export type EnterAnimationPreset =
   | 'none'

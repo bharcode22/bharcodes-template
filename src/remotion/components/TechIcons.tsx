@@ -348,3 +348,85 @@ export const SmartMeterIcon: React.FC<IconProps> = ({
   </svg>
 );
 
+export const CodeBracketIcon: React.FC<IconProps> = ({
+  size = 56,
+  color = '#0071E3',
+}) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+    <path
+      d="M22 20L10 32L22 44M42 20L54 32L42 44"
+      stroke={color}
+      strokeWidth="3.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M36 14L28 50"
+      stroke={color}
+      strokeWidth="3.2"
+      strokeLinecap="round"
+      opacity="0.8"
+    />
+  </svg>
+);
+
+export const DesignPaletteIcon: React.FC<IconProps> = ({
+  size = 56,
+  color = '#FF2D55',
+  accentColor = '#AF52DE',
+}) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+    <path
+      d="M32 10C19.85 10 10 19.85 10 32C10 44.15 19.85 54 32 54C34.2 54 36 52.2 36 50C36 48.98 35.6 48.06 34.96 47.38C34.34 46.72 34 45.86 34 44.9C34 42.7 35.8 40.9 38 40.9H44C50.6 40.9 56 35.5 56 28.9C56 18.5 45.2 10 32 10Z"
+      stroke={color}
+      strokeWidth="3.2"
+      strokeLinejoin="round"
+    />
+    <circle cx="22" cy="24" r="3.2" fill={accentColor} />
+    <circle cx="32" cy="20" r="3.2" fill={color} />
+    <circle cx="42" cy="24" r="3.2" fill="#34C759" />
+    <circle cx="45" cy="34" r="3.2" fill="#FF9500" />
+  </svg>
+);
+
+export const BrainMindIcon: React.FC<IconProps> = ({
+  size = 56,
+  color = '#AF52DE',
+  accentColor = '#0071E3',
+}) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+    <path
+      d="M32 16V48M32 24C28 18 20 18 16 23C12 28 13 35 18 38C14 42 16 48 22 48C26 48 30 44 32 40M32 24C36 18 44 18 48 23C52 28 51 35 46 38C50 42 48 48 42 48C38 48 34 44 32 40"
+      stroke={color}
+      strokeWidth="3.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <circle cx="24" cy="30" r="2.5" fill={accentColor} />
+    <circle cx="40" cy="30" r="2.5" fill={accentColor} />
+  </svg>
+);
+
+export const SparklesAiIcon: React.FC<IconProps> = ({
+  size = 56,
+  color = '#FF9500',
+}) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+    <path
+      d="M32 10C32 21 41 30 52 32C41 34 32 43 32 54C32 43 23 34 12 32C23 30 32 21 32 10Z"
+      fill={color}
+      fillOpacity="0.16"
+      stroke={color}
+      strokeWidth="3.2"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M48 12C48 16.5 51.5 20 56 20C51.5 20 48 23.5 48 28C48 23.5 44.5 20 40 20C44.5 20 48 16.5 48 12Z"
+      stroke={color}
+      strokeWidth="2.4"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+
